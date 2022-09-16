@@ -1,0 +1,10 @@
+[flake8]
+exclude=
+    .gitignore
+    .git
+    venv
+    */migrations/*
+    */tests/*
+max-line-length=120
+format=html
+htmldir=flake-report
