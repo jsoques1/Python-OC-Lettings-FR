@@ -13,17 +13,19 @@ jobs:
       - run:
           name: required packages
           command: |
-            venv/bin/activate
+            pwd
+            . venv/bin/activate
             pip install --user --no-cache-dir -r requirements.txt
           when: always
       - run:
           name: lint
           command: |
-            venv/bin/activate
+            . venv/bin/activate
             flake8
       - run:
           name: non-regression tests
           command: |
+            . venv/bin/activate
             pytest
 
 
