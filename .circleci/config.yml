@@ -13,7 +13,7 @@ jobs:
       - run:
           name: required packages
           command: |
-            pwd
+            ls -l
             . venv/bin/activate
             pip install --user --no-cache-dir -r requirements.txt
           when: always
