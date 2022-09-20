@@ -27,7 +27,7 @@ jobs:
       - run:
           name: non regression tests
           command: |
-              cd oc_lettings_site/
+            cd oc_lettings_site/
             . venv/bin/activate
             pytest
 
