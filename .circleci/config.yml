@@ -4,7 +4,7 @@ orbs:
   heroku: circleci/heroku@1.2.6
 
 jobs:
-  build-and-test:
+  install-and-test:
     docker:
       - image: cimg/python:3.10
     resource_class: small
@@ -28,8 +28,25 @@ jobs:
             . venv/bin/activate
             pytest
 
+  build_docker_image:
+    docker:
+      - image: cimg/python:3.10
+    resource_class: medium
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.14
+      - run:
+          name: build and deploy to dockerhub
+          command: |
+            docker image build --file=Dockerfile --tag=$DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1 .
+            echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_USERNAME --password-stdin
+            docker image push $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1
 
 workflows:
   step1:
     jobs:
-      - build-and-test
+      - install-and-test
+      - - build_docker_image:
+            requires:
+              - build-and-test
