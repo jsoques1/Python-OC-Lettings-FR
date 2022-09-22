@@ -45,25 +45,38 @@ jobs:
             docker push $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
 
   deploy_docker_to_heroku:
-  executor: heroku/default
-  steps:
-    - checkout
-    - setup_remote_docker:
-        version: 20.10.14
-        docker_layer_caching: true
-    - run:
-        name: deploy container to heroku
-        command: |
-          sudo curl https://cli-assets.heroku.com/install.sh | sh
-          HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
-          # (paste command line here)
-          HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY -a $HEROKU_APP_NAME
-          HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set SENTRY_DSN=$SENTRY_DSN -a $HEROKU_APP_NAME
-          HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set DEBUG=0 -a $HEROKU_APP_NAME
-          HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a $HEROKU_APP_NAME web
-          HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a $HEROKU_APP_NAME web
-          HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py migrate -a $HEROKU_APP_NAME
-          HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py loaddata data.json -a $HEROKU_APP_NAME
+    executor: heroku/default
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.14
+          docker_layer_caching: true
+      - heroku/install
+      # the create line is usually commented
+      # if you need to re create the app, please comment the line out for one commit only.
+      # heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql
+      # heroku config:set CSRF_TRUSTED_ORIGINS=$CSRF_TRUSTED_ORIGINS -a $HEROKU_APP_NAME
+      # heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql
+      # heroku heroku maintenance:on -a $HEROKU_APP_NAME
+      # heroku heroku maintenance:off -a $HEROKU_APP_NAME
+      - run:
+          name: deploy container to heroku
+          command: |
+            heroku container:login
+            # heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql
+            heroku config:set SECRET_KEY=$SECRET_KEY -a $HEROKU_APP_NAME
+            heroku config:set ALLOWED_HOSTS=$ALLOWED_HOSTS -a $HEROKU_APP_NAME
+            heroku config:set DEBUG_COLLECTSTATIC=$DISABLE_COLLECTSTATIC  -a $HEROKU_APP_NAME
+            heroku config:set DISABLE_COLLECTSTATIC=$DISABLE_COLLECTSTATIC -a $HEROKU_APP_NAME
+            heroku config:set SENTRY_DSN=$SENTRY_DSN -a $HEROKU_APP_NAME
+            heroku config:set ADMIN_USERNAME=$ADMIN_USERNAME -a $HEROKU_APP_NAME
+            heroku config:set ADMIN_PASSWORD=$ADMIN_PASSWORD -a $HEROKU_APP_NAME
+            heroku config:set ADMIN_EMAIL=$ADMIN_EMAIL -a $HEROKU_APP_NAME
+            heroku container:push -a $HEROKU_APP_NAME web
+            heroku container:release -a $HEROKU_APP_NAME web
+            heroku run python manage.py migrate -a $HEROKU_APP_NAME
+            heroku run python manage.py loaddata oclet.json -a $HEROKU_APP_NAME
+
 
 workflows:
   main:
