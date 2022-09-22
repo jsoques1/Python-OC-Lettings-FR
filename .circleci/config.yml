@@ -47,6 +47,6 @@ workflows:
   step1:
     jobs:
       - install-and-test
-      - - build_docker_image:
-            requires:
-              - build-and-test
+      - build_docker_image:
+          requires:
+            - build-and-test
