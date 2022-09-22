@@ -39,9 +39,9 @@ jobs:
       - run:
           name: build and deploy to dockerhub
           command: |
-            docker image build --file=Dockerfile --tag=$DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1 .
-            echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_USERNAME --password-stdin
-            docker image push $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1
+            docker image build --file=Dockerfile --tag=jsoques1/oc_letting:$CIRCLE_SHA1 .
+            echo "Docker9664!?" | docker login --username=$jsoques1 --password-stdin
+            docker image push jsoques1/oc_letting:$CIRCLE_SHA1
 
 workflows:
   step1:
