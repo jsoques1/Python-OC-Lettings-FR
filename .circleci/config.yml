@@ -39,13 +39,12 @@ jobs:
       - run:
           name: build and deploy to dockerhub
           command: |
-            echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_LOGIN --password-stdin
-            docker build -t image_oc_lettings_site .
-            docker tag image_oc_lettings_site $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
-            docker push $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
+            docker image build --file=Dockerfile --tag=$DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1 .
+            echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_USERNAME --password-stdin
+            docker image push $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1
 
 workflows:
-  step1:
+  main:
     jobs:
       - install-and-test
       - build_docker_image:
