@@ -9,6 +9,6 @@ COPY . /working_space/
 ENV PORT=8000
 EXPOSE 8000
 # Collect static files
-RUN python manage.py collectstatic
+# RUN python manage.py collectstatic
 # Run the application
 CMD gunicorn oc_lettings_site.wsgi -b 0.0.0.0:$PORT
