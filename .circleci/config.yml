@@ -62,7 +62,9 @@ jobs:
       - run:
           name: deploy container to heroku
           command: |
-            heroku container:login
+            set -x
+            #heroku container:login
+            docker login --username=_ --password=$(heroku auth:token) registry.heroku.com
             # heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql
             heroku config:set SECRET_KEY=$SECRET_KEY -a $HEROKU_APP_NAME
             heroku config:set ALLOWED_HOSTS=$ALLOWED_HOSTS -a $HEROKU_APP_NAME
