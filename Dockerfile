@@ -1,8 +1,8 @@
 FROM python:3
-WORKDIR /working_space
+WORKDIR $HOME
 RUN uname -a
 RUN ls -ls
-COPY requirements.txt /working_space/
+COPY requirements.txt $HOME/
 RUN pip install --no-cache-dir -r requirements.txt
-COPY . /working_space/
-CMD python working_space/manage.py runserver
+COPY . $HOME/
+CMD python $HOME/manage.py runserver
