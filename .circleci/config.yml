@@ -56,7 +56,7 @@ jobs:
           name: deploy container to heroku
           command: |
             set -x
-            heroku access
+            heroku access -a $HEROKU_APP_NAME
             heroku status
             echo "===== login ====="
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
