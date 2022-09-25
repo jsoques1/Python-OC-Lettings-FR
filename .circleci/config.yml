@@ -56,9 +56,14 @@ jobs:
           name: deploy container to heroku
           command: |
             set -x
+            heroku access
             heroku status
+            echo "===== login ====="
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
+            ls -l
+            echo "===== push ====="
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a $HEROKU_APP_NAME web
+            echo "===== release ====="
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a $HEROKU_APP_NAME web
 
 workflows:
