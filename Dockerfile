@@ -8,13 +8,17 @@ RUN ls -ls
 COPY requirements.txt /usr/src/app
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . /usr/src/app
-EXPOSE $PORT
-# CMD python $HOME/manage.py runserver
+
 
 CMD pwd
 CMD ls -l
+
+EXPOSE $PORT
+CMD python $HOME/manage.py runserver 0.0.0.0:$PORT
+
+
 # Collect static files
-RUN python manage.py collectstatic
+# RUN python manage.py collectstatic
 
 # Run the application
-CMD gunicorn oc_lettings_site.wsgi -b 0.0.0.0:$PORT
+# CMD gunicorn oc_lettings_site.wsgi -b 0.0.0.0:$PORT
