@@ -2,12 +2,12 @@ FROM python:3
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV PORT 8000
-WORKDIR $HOME
+WORKDIR /usr/src/app
 RUN uname -a
 RUN ls -ls
-COPY requirements.txt $HOME/
+COPY requirements.txt /usr/src/app
 RUN pip install --no-cache-dir -r requirements.txt
-COPY . $HOME/
+COPY . /usr/src/app
 EXPOSE $PORT
 # CMD python $HOME/manage.py runserver
 
