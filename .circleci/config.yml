@@ -27,6 +27,9 @@ jobs:
           command: |
             . venv/bin/activate
             pytest
+            env
+            pwd
+            ls -l
 
   build_docker_image:
     docker:
@@ -40,8 +43,8 @@ jobs:
           name: build and deploy to dockerhub
           command: |
             echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_LOGIN --password-stdin
-            docker build -t image_oc_lettings_site .
-            docker tag image_oc_lettings_site $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
+            docker build -t oc_lettings_site .
+            docker tag oc_lettings_site $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
             docker push $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
 
   deploy_docker_to_heroku:
@@ -56,6 +59,8 @@ jobs:
           name: deploy container to heroku
           command: |
             set -x
+            env
+            ls -l
             # heroku access -a $HEROKU_APP_NAME
             heroku status
             echo "===== login ====="
