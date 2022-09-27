@@ -70,7 +70,7 @@ jobs:
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a $HEROKU_APP_NAME web
             echo "===== release ====="
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a $HEROKU_APP_NAME web
-            mv oc-lettings-site.sqlite3 oc-lettings-site.sqlite3.old
+            rm -f oc-lettings-site.sqlite3 
             ls -l
             pwd
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py migrate -a $HEROKU_APP_NAME

@@ -2,13 +2,13 @@
 {
     "model": "auth.user",
     "fields": {
-        "password": "pbkdf2_sha256$180000$p35UH2yYInHF$4LTphT2basUmvfLq+XHETVvKONZrWUsLfKu1K8/Hqdk==",
+        "password": "pbkdf2_sha256$180000$p35UH2yYInHF$4LTphT2basUmvfLq+XHETVvKONZrWUsLfKu1K8/Hqdk=",
         "last_login": "2022-09-10T19:27:17.305Z",
         "is_superuser": true,
         "username": "admin",
         "first_name": "",
         "last_name": "",
-        "email": "admin2@email.com",
+        "email": "admin@email.com",
         "is_staff": true,
         "is_active": true,
         "date_joined": "2020-06-14T09:41:15.326Z",
