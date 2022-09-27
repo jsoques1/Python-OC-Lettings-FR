@@ -16,4 +16,3 @@ def test_home(client):
 
 def test_dummy():
     assert 1
-
