@@ -4,7 +4,7 @@ orbs:
   heroku: circleci/heroku@1.2.6
 
 jobs:
-  build-and-test:
+  install-and-test:
     docker:
       - image: cimg/python:3.10
     resource_class: small
@@ -27,9 +27,66 @@ jobs:
           command: |
             . venv/bin/activate
             pytest
+            env
+            pwd
+            ls -l
 
+  build_docker_image:
+    docker:
+      - image: cimg/python:3.10
+    resource_class: medium
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.14
+      - run:
+          name: build and deploy to dockerhub
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_LOGIN --password-stdin
+            docker build -t oc_lettings_site .
+            docker tag oc_lettings_site $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
+            docker push $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
+
+  deploy_docker_to_heroku:
+    executor: heroku/default
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.14
+          docker_layer_caching: true
+      - heroku/install
+      - run:
+          name: deploy container to heroku
+          command: |
+            set -x
+            env
+            ls -l
+            # heroku access -a $HEROKU_APP_NAME
+            heroku status
+            echo "===== login ====="
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
+            ls -l
+            echo "===== push ====="
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a $HEROKU_APP_NAME web
+            echo "===== release ====="
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a $HEROKU_APP_NAME web
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py showmigrations -a $HEROKU_APP_NAME
+            rm -f oc-lettings-site.sqlite3 
+            ls -l
+            pwd
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py makemigrations -a $HEROKU_APP_NAME
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py showmigrations -a $HEROKU_APP_NAME
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py migrate -a $HEROKU_APP_NAME
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py showmigrations -a $HEROKU_APP_NAME
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py loaddata db_data.json -a $HEROKU_APP_NAME
 
 workflows:
-  step1:
+  main:
     jobs:
-      - build-and-test
+      - install-and-test
+      - build_docker_image:
+          requires:
+            - install-and-test
+      - deploy_docker_to_heroku:
+          requires:
+            - build_docker_image
