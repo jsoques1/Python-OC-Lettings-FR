@@ -87,6 +87,10 @@ workflows:
       - build_docker_image:
           requires:
             - install-and-test
+          filters:
+            branches:
+              only:
+                - main
       - deploy_docker_to_heroku:
           requires:
             - build_docker_image
