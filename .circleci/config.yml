@@ -90,3 +90,7 @@ workflows:
       - deploy_docker_to_heroku:
           requires:
             - build_docker_image
+          filters:
+            branches:
+              only:
+                - main
