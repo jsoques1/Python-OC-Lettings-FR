@@ -59,21 +59,11 @@ jobs:
           name: deploy container to heroku
           command: |
             set -x
-            env
-            ls -l
-            # heroku access -a $HEROKU_APP_NAME
             heroku status
-            echo "===== login ====="
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
-            ls -l
-            echo "===== push ====="
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a $HEROKU_APP_NAME web
-            echo "===== release ====="
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a $HEROKU_APP_NAME web
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py showmigrations -a $HEROKU_APP_NAME
-            rm -f oc-lettings-site.sqlite3 
-            ls -l
-            pwd
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py makemigrations -a $HEROKU_APP_NAME
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py showmigrations -a $HEROKU_APP_NAME
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py migrate -a $HEROKU_APP_NAME
