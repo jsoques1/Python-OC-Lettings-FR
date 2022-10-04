@@ -1,5 +1,5 @@
 import os
-# from decouple import config
+from decouple import config
 import dj_database_url
 
 import sentry_sdk
@@ -13,11 +13,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'fp$9^593hsriajg$_%=5trot9g!1qa@ew(o-1#@=&4%=hp46(s'
-# SECRET_KEY = config("SECRET_KEY")
+# SECRET_KEY = 'fp$9^593hsriajg$_%=5trot9g!1qa@ew(o-1#@=&4%=hp46(s'
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'oc-letting-fr.herokuapp.com']
 
@@ -119,7 +119,7 @@ STATIC_URL = '/static/'
 
 # Sentry configuration
 sentry_sdk.init(
-    dsn='https://feccf2245b02474cb890d64acd9bd47a@o1402059.ingest.sentry.io/6733741',
+    dsn=config('SENTRY_DSN'),
     integrations=[DjangoIntegration()],
     traces_sample_rate=1.0,
     send_default_pii=True
