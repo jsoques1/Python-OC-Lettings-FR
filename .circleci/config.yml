@@ -60,15 +60,15 @@ jobs:
           command: |
             set -x
             heroku status
-            . ./.env
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
+            # heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql
+            heroku config:set SECRET_KEY=$SECRET_KEY -a $HEROKU_APP_NAME
+
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a $HEROKU_APP_NAME web
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a $HEROKU_APP_NAME web
-            HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py showmigrations -a $HEROKU_APP_NAME
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py makemigrations -a $HEROKU_APP_NAME
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py showmigrations -a $HEROKU_APP_NAME
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py migrate -a $HEROKU_APP_NAME
-            HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py showmigrations -a $HEROKU_APP_NAME
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py loaddata db_data.json -a $HEROKU_APP_NAME
 
 workflows:
