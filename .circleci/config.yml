@@ -43,9 +43,9 @@ jobs:
             # docker build -t oc_lettings_site .
             # docker tag oc_lettings_site $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
             # docker push $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
-            docker image build --file=Dockerfile --tag=$DOCKER_LOGIN/$IMAGE_REPO:$CIRCLE_SHA1 .
+            docker image build --file=Dockerfile --tag=$DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1 .
             echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_LOGIN --password-stdin
-            docker image push $DOCKER_LOGIN/$IMAGE_REPO:$CIRCLE_SHA1
+            docker image push $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
 
   deploy_docker_to_heroku:
     executor: heroku/default
