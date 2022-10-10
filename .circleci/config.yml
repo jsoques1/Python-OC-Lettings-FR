@@ -27,9 +27,6 @@ jobs:
           command: |
             . venv/bin/activate
             pytest
-            env
-            pwd
-            ls -l
 
   build_docker_image:
     docker:
@@ -46,6 +43,10 @@ jobs:
             docker build -t oc_lettings_site .
             docker tag oc_lettings_site $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
             docker push $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
+            
+            # docker image build --file=Dockerfile --tag=$DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1 .
+            # echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_LOGIN --password-stdin
+            # docker image push $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
 
   deploy_docker_to_heroku:
     executor: heroku/default
@@ -61,12 +62,7 @@ jobs:
             set -x
             heroku status
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
-            # HEROKU_API_KEY=${HEROKU_TOKEN} heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql
-            # HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set SECRET_KEY=${SECRET_KEY} -a $HEROKU_APP_NAME
-            # HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set ADMIN_USERNAME=${ADMIN_USERNAME} -a $HEROKU_APP_NAME
-            # HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set ADMIN_PASSWORD=${ADMIN_PASSWORD} -a $HEROKU_APP_NAME
-            # HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set ADMIN_EMAIL=${ADMIN_EMAIL} -a $HEROKU_APP_NAME
-            # HEROKU_API_KEY=${HEROKU_TOKEN} heroku config:set SENTRY_DSN=${SENTRY_DSN} -a $HEROKU_APP_NAME
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql
             
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a $HEROKU_APP_NAME web
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a $HEROKU_APP_NAME web
