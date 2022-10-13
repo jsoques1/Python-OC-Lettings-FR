@@ -43,10 +43,6 @@ jobs:
             docker build -t oc_lettings_site .
             docker tag oc_lettings_site $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
             docker push $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
-            
-            # docker image build --file=Dockerfile --tag=$DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1 .
-            # echo "$DOCKER_PASSWORD" | docker login --username=$DOCKER_LOGIN --password-stdin
-            # docker image push $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
 
   deploy_docker_to_heroku:
     executor: heroku/default
@@ -60,15 +56,19 @@ jobs:
           name: deploy container to heroku
           command: |
             set -x
+            env
+            ls -l
+            # heroku access -a $HEROKU_APP_NAME
             heroku status
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
-            HEROKU_API_KEY=${HEROKU_TOKEN} heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql
-            
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a $HEROKU_APP_NAME web
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a $HEROKU_APP_NAME web
+            
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py showmigrations -a $HEROKU_APP_NAME
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py makemigrations -a $HEROKU_APP_NAME
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py showmigrations -a $HEROKU_APP_NAME
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py migrate -a $HEROKU_APP_NAME
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py showmigrations -a $HEROKU_APP_NAME
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py loaddata db_data.json -a $HEROKU_APP_NAME
 
 workflows:
@@ -78,7 +78,14 @@ workflows:
       - build_docker_image:
           requires:
             - install-and-test
+          filters:
+            branches:
+              only:
+                - main
       - deploy_docker_to_heroku:
           requires:
             - build_docker_image
-
+          filters:
+            branches:
+              only:
+                - main
