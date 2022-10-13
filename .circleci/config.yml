@@ -55,12 +55,10 @@ jobs:
       - run:
           name: deploy container to heroku
           command: |
-            set -x
-            env
-            ls -l
             # heroku access -a $HEROKU_APP_NAME
             heroku status
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
+            HEROKU_API_KEY=${HEROKU_TOKEN} heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a $HEROKU_APP_NAME web
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a $HEROKU_APP_NAME web
             
