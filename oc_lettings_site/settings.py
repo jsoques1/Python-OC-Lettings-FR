@@ -109,7 +109,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -119,6 +119,7 @@ STATIC_URL = '/static/'
 
 # Sentry configuration
 sentry_sdk.init(
+    # dsn=config('SENTRY_DSN'),
     dsn='https://feccf2245b02474cb890d64acd9bd47a@o1402059.ingest.sentry.io/6733741',
     integrations=[DjangoIntegration()],
     traces_sample_rate=1.0,
