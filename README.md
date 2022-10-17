@@ -1,4 +1,9 @@
-## Résumé
+[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
+
+# Projet 13 : Mettez à l'échelle une application Django en utilisant une architecture modulaire
+
+*** voir https://openclassrooms.com/fr/paths/518/projects/841/assignment ***
+
 
 Site web d'Orange County Lettings
 
@@ -13,7 +18,6 @@ Site web d'Orange County Lettings
 
 Dans le reste de la documentation sur le développement local, il est supposé que la commande `python` de votre OS shell exécute l'interpréteur Python ci-dessus (à moins qu'un environnement virtuel ne soit activé).
 
-### macOS / Linux
 
 #### Cloner le repository
 
@@ -69,9 +73,73 @@ Dans le reste de la documentation sur le développement local, il est supposé q
 - Aller sur `http://localhost:8000/admin`
 - Connectez-vous avec l'utilisateur `admin`, mot de passe `Abc1234!`
 
-### Windows
+### Déploiement
 
-Utilisation de PowerShell, comme ci-dessus sauf :
+### fonctionnement
 
-- Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
-- Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
+Une application GitHub mise à jour avec un Push des modifications vers GitHub va déclencher un pipeline CircleCI
+comprenant étapes :
+* lint du code et exécutions des tests de non-régression,
+* génération d'un container pour le déploiement de l'application mise à jour sur les sites le nécessitant,
+* envoi et déploiement du container vers un hub Docker, où l'application est automatiquement démarré.
+
+Sur échec d'une étape, le pipeline est interrompu avec une erreur reportée pour le Push initial
+
+Lors de l'échec d'execution de l'application, une erreur est reportée par Django vers Sentry.
+
+### Logiciels
+
+Plusieurs logiciels sont nécessaires pour mettre en oeuvre le mécanisme ci-dessus :
+* CircleCI
+* Docker, Docker Hub, Docker Desktop,
+* Sentry (https://sentry.io/signup/)
+
+Se référer aux documents officiels de ces logiciels pour leur sous-subscription/installation/configuration
+
+L'IDE doit intégrer le logiciel CircleCI qui exécute le pipeline
+lors de la mise à jour de l'application. (Tous les tests effectués avec PyCharm et CicleCI)
+
+L'application doit intégrer SDK
+
+### Variables de configuration CircleCI
+
+| Clé             | Valeur                  |
+|-----------------|-------------------------|
+| DOCKER_LOGIN    | Docker Hub login        |
+| DOCKER_PASSWORD | Docker Hub Passwd       |
+| HEROKU_REPO     | Docker Hub repository   |
+| HEROKU_APP_NAME | Heroku application name |
+| HEROKU_TOKEN    | Heroku token            |
+
+### Variables dans settings.py
+SECRET_KEY Django secret key
+ALLOWED_HOSTS doit contenir le dns de l'application déployé sur le web par Heroku
+Sentry dns dans sentry_sdk.init()
+
+### Récupération d'une image Docker
+- lancer le Docker Desktop (s'il ne l'est pas encore)
+- sélectionner Images/REMOTE REPOSITORIES
+- sélectionner une image (la dernière contient toutes les dernières m.à.j.) en positionnant le curseur sur la bonne 
+  ligne
+- cliquer RUN qui apparaît et valider
+- le contenu de Images/Local va afficher les barres d'avancement de chargement de l'image Docker
+
+L'image téléchargé va être stocké sous C:\Users\my_win_username\AppData\Local\Docker\wsl\data\ext4.vhdx
+
+### Lancement d'une image locale
+
+Lancer la commande suivante dans une fenêtre powershell: 
+- `docker run -p 8000:8000 -i -t $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1`     
+
+$DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1 est le tag associé à l'image locale.
+
+- lancer l'application avec
+    `https://localhost:8000`      
+     ou la partie administrative de l'application  
+    `https://localhost:8000/admin/`    
+
+    remember credentials were provided on step 8. of the above '1. local' section. 
+
+ ### Lancement d'une image déployée par heroku
+
+- utiliser le dns de l'application déployé sur le web par Heroku déclaré dans settings.py
