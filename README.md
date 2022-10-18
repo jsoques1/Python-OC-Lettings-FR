@@ -4,6 +4,16 @@
 
 *** voir https://openclassrooms.com/fr/paths/518/projects/841/assignment ***
 
+## Logiciels
+ 
+ ```
+Windows 11
+Python 3.10.1
+CircleCI
+Docker, Docker Hub 2022, Docker Desktop 4.12.0,
+Sentry 
+python modules - voir requirements.txt
+```
 
 Site web d'Orange County Lettings
 
@@ -73,7 +83,7 @@ Dans le reste de la documentation sur le développement local, il est supposé q
 - Aller sur `http://localhost:8000/admin`
 - Connectez-vous avec l'utilisateur `admin`, mot de passe `Abc1234!`
 
-### Déploiement
+## Déploiement
 
 ### fonctionnement
 
