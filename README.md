@@ -4,12 +4,22 @@
 
 *** voir https://openclassrooms.com/fr/paths/518/projects/841/assignment ***
 
-
-Site web d'Orange County Lettings
+## Logiciels
+ 
+ ```
+Windows 11
+Python 3.10.1
+CircleCI
+Docker, Docker Hub 2022, Docker Desktop 4.12.0,
+Sentry 
+python modules - voir requirements.txt
+```
 
 ## Développement local
 
 ### Prérequis
+
+Site web d'Orange County Lettings
 
 - Compte GitHub avec accès en lecture à ce repository
 - Git CLI
@@ -73,33 +83,19 @@ Dans le reste de la documentation sur le développement local, il est supposé q
 - Aller sur `http://localhost:8000/admin`
 - Connectez-vous avec l'utilisateur `admin`, mot de passe `Abc1234!`
 
-### Déploiement
+## Déploiement
 
 ### fonctionnement
 
 Une application GitHub mise à jour avec un Push des modifications vers GitHub va déclencher un pipeline CircleCI
 comprenant étapes :
 * lint du code et exécutions des tests de non-régression,
-* génération d'un container pour le déploiement de l'application mise à jour sur les sites le nécessitant,
-* envoi et déploiement du container vers un hub Docker, où l'application est automatiquement démarré.
+* génération d'une image Docker pour le déploiement de l'application mise à jour sur les sites le nécessitant,
+* envoi et déploiement d'un container vers un hub Docker, où l'application est automatiquement démarré.
 
 Sur échec d'une étape, le pipeline est interrompu avec une erreur reportée pour le Push initial
 
 Lors de l'échec d'execution de l'application, une erreur est reportée par Django vers Sentry.
-
-### Logiciels
-
-Plusieurs logiciels sont nécessaires pour mettre en oeuvre le mécanisme ci-dessus :
-* CircleCI
-* Docker, Docker Hub, Docker Desktop,
-* Sentry (https://sentry.io/signup/)
-
-Se référer aux documents officiels de ces logiciels pour leur sous-subscription/installation/configuration
-
-L'IDE doit intégrer le logiciel CircleCI qui exécute le pipeline
-lors de la mise à jour de l'application. (Tous les tests effectués avec PyCharm et CicleCI)
-
-L'application doit intégrer SDK
 
 ### Variables de configuration CircleCI
 
@@ -112,8 +108,7 @@ L'application doit intégrer SDK
 | HEROKU_TOKEN    | Heroku token            |
 
 ### Variables dans settings.py
-SECRET_KEY Django secret key
-ALLOWED_HOSTS doit contenir le dns de l'application déployé sur le web par Heroku
+- ALLOWED_HOSTS doit contenir le dns de l'application déployé sur le web par Heroku
 Sentry dns dans sentry_sdk.init()
 
 ### Récupération d'une image Docker
@@ -124,7 +119,7 @@ Sentry dns dans sentry_sdk.init()
 - cliquer RUN qui apparaît et valider
 - le contenu de Images/Local va afficher les barres d'avancement de chargement de l'image Docker
 
-L'image téléchargé va être stocké sous C:\Users\my_win_username\AppData\Local\Docker\wsl\data\ext4.vhdx
+L'image téléchargée va être stockée sous C:\Users\my_win_username\AppData\Local\Docker\wsl\data\ext4.vhdx
 
 ### Lancement d'une image locale
 
@@ -136,10 +131,8 @@ $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1 est le tag associé à l'image locale.
 - lancer l'application avec
     `https://localhost:8000`      
      ou la partie administrative de l'application  
-    `https://localhost:8000/admin/`    
+    `https://localhost:8000/admin/`
 
-    remember credentials were provided on step 8. of the above '1. local' section. 
+### Lancement d'une image déployée par heroku
 
- ### Lancement d'une image déployée par heroku
-
-- utiliser le dns de l'application déployé sur le web par Heroku déclaré dans settings.py
+- utiliser le dns de l'application déployée sur le web par Heroku déclaré dans settings.py
