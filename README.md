@@ -11,8 +11,9 @@ Windows 11
 Python 3.10.1
 CircleCI
 Docker, Docker Hub 2022, Docker Desktop 4.12.0,
+Heroku 
 Sentry 
-python modules - voir requirements.txt
+modules python - voir requirements.txt
 ```
 
 ## Développement local
@@ -91,7 +92,7 @@ Une application GitHub mise à jour avec un Push des modifications vers GitHub v
 comprenant étapes :
 * lint du code et exécutions des tests de non-régression,
 * génération d'une image Docker pour le déploiement de l'application mise à jour sur les sites le nécessitant,
-* envoi et déploiement d'un container vers un hub Docker, où l'application est automatiquement démarré.
+* déploiement de l'application sur Heroku, où l'application est automatiquement démarré.
 
 Sur échec d'une étape, le pipeline est interrompu avec une erreur reportée pour le Push initial
 
@@ -133,6 +134,6 @@ $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1 est le tag associé à l'image locale.
      ou la partie administrative de l'application  
     `https://localhost:8000/admin/`
 
-### Lancement d'une image déployée par heroku
+### Lancement d'une application déployée heroku
 
 - utiliser le dns de l'application déployée sur le web par Heroku déclaré dans settings.py
