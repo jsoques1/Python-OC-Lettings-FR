@@ -112,7 +112,7 @@ Lors de l'échec d'execution de l'application, une erreur est reportée par Djan
 - ALLOWED_HOSTS doit contenir le dns de l'application déployé sur le web par Heroku
 Sentry dns dans sentry_sdk.init()
 
-### Récupération d'une image Docker
+### Récupération seule d'une image Docker
 - lancer le Docker Desktop (s'il ne l'est pas encore)
 - sélectionner Images/REMOTE REPOSITORIES
 - sélectionner une image (la dernière contient toutes les dernières m.à.j.) en positionnant le curseur sur la bonne 
@@ -122,7 +122,7 @@ Sentry dns dans sentry_sdk.init()
 
 L'image téléchargée va être stockée sous C:\Users\my_win_username\AppData\Local\Docker\wsl\data\ext4.vhdx
 
-### Lancement d'une image locale
+### Lancement d'une image locale ou en le récupérant automatiquement
 
 Lancer la commande suivante dans une fenêtre powershell: 
 - `docker run -p 8000:8000 -i -t $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1`     
