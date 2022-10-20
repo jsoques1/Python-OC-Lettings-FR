@@ -78,11 +78,11 @@ workflows:
           filters:
             branches:
               only:
-                - mainflow
+                - main
       - deploy_to_heroku:
           requires:
             - build_docker_image
           filters:
             branches:
               only:
-                - mainflow
+                - main
