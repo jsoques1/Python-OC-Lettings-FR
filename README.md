@@ -79,7 +79,8 @@ Dans le reste de la documentation sur le développement local, il est supposé q
   Python-OC-Lettings-FR_profile where favorite_city like 'B%';`
 - `.quit` pour quitter
 
-#### Panel d'administration
+
+**#### Panel d'administration**
 
 - Aller sur `http://localhost:8000/admin`
 - Connectez-vous avec l'utilisateur `admin`, mot de passe `Abc1234!`
