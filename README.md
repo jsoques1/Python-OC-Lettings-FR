@@ -101,17 +101,34 @@ Lors de l'échec d'execution de l'application, une erreur est reportée par Djan
 
 ### Variables de configuration CircleCI
 
-| Clé             | Valeur                  |
-|-----------------|-------------------------|
-| DOCKER_LOGIN    | Docker Hub login        |
-| DOCKER_PASSWORD | Docker Hub Passwd       |
-| HEROKU_REPO     | Docker Hub repository   |
-| HEROKU_APP_NAME | Heroku application name |
-| HEROKU_TOKEN    | Heroku token            |
+| Clé               | Valeur                  |
+|-------------------|-------------------------|
+| DJANGO_SECRET_KEY | Django secret key       |
+| DOCKER_LOGIN      | Docker Hub login        |
+| DOCKER_PASSWORD   | Docker Hub Passwd       |
+| HEROKU_REPO       | Docker Hub repository   |
+| HEROKU_APP_NAME   | Heroku application name |
+| HEROKU_TOKEN      | Heroku token            |
+| SENTRY_DSN        | Sentry dsn              |
 
-### Variables dans settings.py
-- ALLOWED_HOSTS doit contenir le dns de l'application déployé sur le web par Heroku
-Sentry dns dans sentry_sdk.init()
+### Variables de configuration Heroku
+
+| Clé               | Valeur                  |
+|-------------------|-------------------------|
+| DJANGO_SECRET_KEY | Django secret key       |
+| HEROKU_APP_NAME   | Heroku application name |
+| SENTRY_DSN        | Sentry dsn              |
+
+En cas de suppression de l'application dans Heroku, la recréer via le GUI ou le CLI :
+- `heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql`
+
+### Variables de configuration (fichier .env) pour le lancement local de l'application
+
+| Clé               | Valeur                  |
+|-------------------|-------------------------|
+| DJANGO_SECRET_KEY | Django secret key       |
+| HEROKU_APP_NAME   | Heroku application name |
+| SENTRY_DSN        | Sentry dsn              |
 
 ### Récupération seule d'une image Docker
 - lancer le Docker Desktop (s'il ne l'est pas encore)
@@ -126,7 +143,7 @@ L'image téléchargée va être stockée sous C:\Users\my_win_username\AppData\L
 ### Lancement d'une image locale ou en le récupérant automatiquement
 
 Lancer la commande suivante dans une fenêtre powershell: 
-- `docker run -p 8000:8000 -i -t $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1`     
+- `docker run --env-file .env --p 8000:8000 -i -t $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1`     
 
 $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1 est le tag associé à l'image locale.
 
