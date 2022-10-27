@@ -122,6 +122,8 @@ Lors de l'échec d'execution de l'application, une erreur est reportée par Djan
 En cas de suppression de l'application dans Heroku, la recréer via le GUI ou le CLI :
 - `heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql`
 
+Et resaisir ces variables d'environnement.
+
 ### Variables de configuration (fichier .env) pour le lancement local de l'application
 
 | Clé               | Valeur                  |
