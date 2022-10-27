@@ -1,5 +1,5 @@
 import os
-# from decouple import config
+import environ
 import dj_database_url
 
 import sentry_sdk
@@ -8,18 +8,20 @@ from sentry_sdk.integrations.django import DjangoIntegration
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'fp$9^593hsriajg$_%=5trot9g!1qa@ew(o-1#@=&4%=hp46(s'
-# SECRET_KEY = config("SECRET_KEY")
+# SECRET_KEY = 'fp$9^593hsriajg$_%=5trot9g!1qa@ew(o-1#@=&4%=hp46(s'
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'oc-letting-fr.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', f'{env("HEROKU_APP_NAME")}.herokuapp.com']
 
 # Application definition
 
@@ -119,8 +121,8 @@ STATIC_URL = '/static/'
 
 # Sentry configuration
 sentry_sdk.init(
-    # dsn=config('SENTRY_DSN'),
-    dsn='https://feccf2245b02474cb890d64acd9bd47a@o1402059.ingest.sentry.io/6733741',
+    dsn=env('SENTRY_DSN'),
+    # dsn='https://feccf2245b02474cb890d64acd9bd47a@o1402059.ingest.sentry.io/6733741',
     integrations=[DjangoIntegration()],
     traces_sample_rate=1.0,
     send_default_pii=True
