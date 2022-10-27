@@ -11,8 +11,9 @@ Windows 11
 Python 3.10.1
 CircleCI
 Docker, Docker Hub 2022, Docker Desktop 4.12.0,
+Heroku 
 Sentry 
-python modules - voir requirements.txt
+modules python - voir requirements.txt
 ```
 
 ## Développement local
@@ -78,7 +79,8 @@ Dans le reste de la documentation sur le développement local, il est supposé q
   Python-OC-Lettings-FR_profile where favorite_city like 'B%';`
 - `.quit` pour quitter
 
-#### Panel d'administration
+
+**#### Panel d'administration**
 
 - Aller sur `http://localhost:8000/admin`
 - Connectez-vous avec l'utilisateur `admin`, mot de passe `Abc1234!`
@@ -91,7 +93,7 @@ Une application GitHub mise à jour avec un Push des modifications vers GitHub v
 comprenant étapes :
 * lint du code et exécutions des tests de non-régression,
 * génération d'une image Docker pour le déploiement de l'application mise à jour sur les sites le nécessitant,
-* envoi et déploiement d'un container vers un hub Docker, où l'application est automatiquement démarré.
+* déploiement de l'application sur Heroku, où l'application est automatiquement démarré.
 
 Sur échec d'une étape, le pipeline est interrompu avec une erreur reportée pour le Push initial
 
@@ -99,19 +101,36 @@ Lors de l'échec d'execution de l'application, une erreur est reportée par Djan
 
 ### Variables de configuration CircleCI
 
-| Clé             | Valeur                  |
-|-----------------|-------------------------|
-| DOCKER_LOGIN    | Docker Hub login        |
-| DOCKER_PASSWORD | Docker Hub Passwd       |
-| HEROKU_REPO     | Docker Hub repository   |
-| HEROKU_APP_NAME | Heroku application name |
-| HEROKU_TOKEN    | Heroku token            |
+| Clé               | Valeur                  |
+|-------------------|-------------------------|
+| DJANGO_SECRET_KEY | Django secret key       |
+| DOCKER_LOGIN      | Docker Hub login        |
+| DOCKER_PASSWORD   | Docker Hub Passwd       |
+| HEROKU_REPO       | Docker Hub repository   |
+| HEROKU_APP_NAME   | Heroku application name |
+| HEROKU_TOKEN      | Heroku token            |
+| SENTRY_DSN        | Sentry dsn              |
 
-### Variables dans settings.py
-- ALLOWED_HOSTS doit contenir le dns de l'application déployé sur le web par Heroku
-Sentry dns dans sentry_sdk.init()
+### Variables de configuration Heroku
 
-### Récupération d'une image Docker
+| Clé               | Valeur                  |
+|-------------------|-------------------------|
+| DJANGO_SECRET_KEY | Django secret key       |
+| HEROKU_APP_NAME   | Heroku application name |
+| SENTRY_DSN        | Sentry dsn              |
+
+En cas de suppression de l'application dans Heroku, la recréer via le GUI ou le CLI :
+- `heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql`
+
+### Variables de configuration (fichier .env) pour le lancement local de l'application
+
+| Clé               | Valeur                  |
+|-------------------|-------------------------|
+| DJANGO_SECRET_KEY | Django secret key       |
+| HEROKU_APP_NAME   | Heroku application name |
+| SENTRY_DSN        | Sentry dsn              |
+
+### Récupération seule d'une image Docker
 - lancer le Docker Desktop (s'il ne l'est pas encore)
 - sélectionner Images/REMOTE REPOSITORIES
 - sélectionner une image (la dernière contient toutes les dernières m.à.j.) en positionnant le curseur sur la bonne 
@@ -121,10 +140,10 @@ Sentry dns dans sentry_sdk.init()
 
 L'image téléchargée va être stockée sous C:\Users\my_win_username\AppData\Local\Docker\wsl\data\ext4.vhdx
 
-### Lancement d'une image locale
+### Lancement d'une image locale ou en le récupérant automatiquement
 
 Lancer la commande suivante dans une fenêtre powershell: 
-- `docker run -p 8000:8000 -i -t $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1`     
+- `docker run --env-file .env --p 8000:8000 -i -t $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1`     
 
 $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1 est le tag associé à l'image locale.
 
@@ -133,6 +152,6 @@ $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1 est le tag associé à l'image locale.
      ou la partie administrative de l'application  
     `https://localhost:8000/admin/`
 
-### Lancement d'une image déployée par heroku
+### Lancement d'une application déployée heroku
 
 - utiliser le dns de l'application déployée sur le web par Heroku déclaré dans settings.py

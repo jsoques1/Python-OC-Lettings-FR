@@ -44,7 +44,7 @@ jobs:
             docker tag oc_lettings_site $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
             docker push $DOCKER_LOGIN/$DOCKER_REPO:$CIRCLE_SHA1
 
-  deploy_docker_to_heroku:
+  deploy_to_heroku:
     executor: heroku/default
     steps:
       - checkout
@@ -53,14 +53,14 @@ jobs:
           docker_layer_caching: true
       - heroku/install
       - run:
-          name: deploy container to heroku
+          name: deploy to heroku
           command: |
-            # heroku access -a $HEROKU_APP_NAME
             heroku status
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
-            HEROKU_API_KEY=${HEROKU_TOKEN} heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql
+            # HEROKU_API_KEY=${HEROKU_TOKEN} heroku apps:create $HEROKU_APP_NAME --region eu --addons=heroku-postgresql
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a $HEROKU_APP_NAME web
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a $HEROKU_APP_NAME web
+            
             
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py showmigrations -a $HEROKU_APP_NAME
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py makemigrations -a $HEROKU_APP_NAME
@@ -70,7 +70,7 @@ jobs:
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku run python manage.py loaddata db_data.json -a $HEROKU_APP_NAME
 
 workflows:
-  main:
+  mainflow:
     jobs:
       - install-and-test
       - build_docker_image:
@@ -80,7 +80,7 @@ workflows:
             branches:
               only:
                 - main
-      - deploy_docker_to_heroku:
+      - deploy_to_heroku:
           requires:
             - build_docker_image
           filters:
