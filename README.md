@@ -156,4 +156,5 @@ $DOCKER_USERNAME/$IMAGE_REPO:$CIRCLE_SHA1 est le tag associé à l'image locale.
 
 ### Lancement d'une application déployée heroku
 
-- utiliser le dns de l'application déployée sur le web par Heroku déclaré dans settings.py
+- utiliser le dns de l'application déployée sur le web par Heroku et référencé par la variable SENTRY_DSN dans les 
+sections ci-dessus.
